@@ -17,4 +17,9 @@ public class PlayerIdentity : MonoBehaviour
     public string GetSteamName() => _steamName;
     public bool IsLocalPlayer() => _isLocalPlayer;
     #endregion
+
+    public void Initialize(ushort id)
+    {
+        _id = id;
+    }
 }

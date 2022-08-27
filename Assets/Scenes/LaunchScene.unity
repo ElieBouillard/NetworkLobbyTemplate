@@ -200,9 +200,10 @@ MonoBehaviour:
   _useSteam: 0
   _port: 7777
   _maxPlayer: 4
-  _lobbyPlayerPrefab: {fileID: 0}
+  _lobbyPlayerPrefab: {fileID: 4399759002719680571, guid: 330a7dcd1d11ef74394fc6e48b8dafa1, type: 3}
   _localPlayerPrefab: {fileID: 0}
   _generalPlayerPrefab: {fileID: 0}
+  _gameState: 1
 --- !u!4 &2102392012
 Transform:
   m_ObjectHideFlags: 0

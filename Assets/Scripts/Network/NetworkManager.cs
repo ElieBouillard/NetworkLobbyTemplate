@@ -21,7 +21,7 @@ public class NetworkManager : Singleton<NetworkManager>
     #region Fields
     private Server _server;
     private Client _client; 
-    /*Set To Private */ public GameState _gameState;
+    /*Set To Private */ public GameState _gameState = GameState.OffLine;
     private Dictionary<ushort, PlayerIdentity> _players = new Dictionary<ushort, PlayerIdentity>();
     private ClientMessages _clientMessages;
     private ServerMessages _serverMessages;
@@ -58,6 +58,20 @@ public class NetworkManager : Singleton<NetworkManager>
         _client.Tick();
         
         if(_server.IsRunning) _server.Tick();
+    }
+
+    private void OnApplicationQuit()
+    {
+        switch (_gameState)
+        {
+            case GameState.OffLine:
+                break;
+            case GameState.Lobby:
+                LeaveLobby();
+                break;
+            case GameState.Gameplay:
+                break;
+        }
     }
 
     private void InitializeClient()
@@ -113,7 +127,17 @@ public class NetworkManager : Singleton<NetworkManager>
     #region ServerCallbacks
     private void ServerOnClientConnected(object sender, ServerClientConnectedEventArgs e)
     {
-        
+        switch (_gameState)
+        {
+            case GameState.OffLine:
+                break;
+            case GameState.Lobby:
+                _serverMessages.SendPlayerConnectedToLobby(e.Client.Id);
+                break;
+            case GameState.Gameplay:
+                _server.DisconnectClient(e.Client.Id);
+                break;
+        }
     }
     
     private void ServerOnClientDiconnected(object sender, ClientDisconnectedEventArgs e)
@@ -139,7 +163,19 @@ public class NetworkManager : Singleton<NetworkManager>
         _client.Disconnect();
         ClientOnDisconnected(new object(), EventArgs.Empty);
         
-        if (_server.IsRunning) _server.Stop();
+        _server.Stop();
+    }
+    #endregion
+
+    #region ServerOnClientFunctions
+
+    public void AddPlayerToLobby(ushort newPlayerId)
+    {
+        GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, SpawnPointsManager.Instance.SpawnPointsCoord[_players.Count], Quaternion.identity);
+        PlayerIdentity playerIdentityInstance = playerInstance.GetComponent<PlayerIdentity>();
+        playerIdentityInstance.Initialize(newPlayerId);
+        
+        _players.Add(newPlayerId, playerIdentityInstance);
     }
     #endregion
 }
