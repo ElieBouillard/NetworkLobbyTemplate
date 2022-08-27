@@ -25,7 +25,7 @@ public class SceneLoader : MonoBehaviour
         
     }
 
-    [MenuItem("SceneLoader/PlayBuild")]
+    [MenuItem("SceneLoader/Play Build")]
     private static void PlayBuild()
     {
         EditorSceneManager.SaveOpenScenes();
@@ -33,6 +33,18 @@ public class SceneLoader : MonoBehaviour
         EditorSceneManager.OpenScene("Assets/Scenes/LaunchScene.unity", OpenSceneMode.Single);
         
         EditorApplication.EnterPlaymode();
+    }
+
+    [MenuItem("SceneLoader/Load StartMenuScene")]
+    private static void LoadStartMenuScene()
+    {
+        EditorSceneManager.OpenScene("Assets/Scenes/StartMenuScene.unity", OpenSceneMode.Single);
+    }
+    
+    [MenuItem("SceneLoader/Load GameplayScene")]
+    private static void LoadGameplayScene()
+    {
+        EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Single);
     }
 }
 

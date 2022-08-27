@@ -83,11 +83,15 @@ public class NetworkManager : Singleton<NetworkManager>
     private void ClientOnConnected(object sender, EventArgs e)
     {
         _gameState = GameState.Lobby;
+        
+        PanelManager.Instance.EnablePanel(PanelType.Lobby);
     }
 
     private void ClientOnDisconnected(object sender, EventArgs e)
     {
         _gameState = GameState.OffLine;
+        
+        PanelManager.Instance.EnablePanel(PanelType.MainMenu);
     }
     
     private void ClientOnConnectionFailed(object sender, EventArgs e)
@@ -119,20 +123,17 @@ public class NetworkManager : Singleton<NetworkManager>
     #endregion
 
     #region ClientFunctions
-    [ContextMenu("StartHost")]
     public void StartHost()
     {
         _server.Start(_port, _maxPlayer);
         _client.Connect($"127.0.0.1:{_port}");
     }
     
-    [ContextMenu("JoinLobby")]
     public void JoinLobby()
     {
         _client.Connect($"127.0.0.1:{_port}");
     }
-
-    [ContextMenu("LeaveLobby")]
+    
     public void LeaveLobby()
     {
         _client.Disconnect();
