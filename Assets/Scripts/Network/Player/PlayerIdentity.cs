@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class PlayerIdentity : MonoBehaviour
 {
@@ -18,8 +19,10 @@ public class PlayerIdentity : MonoBehaviour
     public bool IsLocalPlayer() => _isLocalPlayer;
     #endregion
 
-    public void Initialize(ushort id)
+    public virtual void Initialize(ushort id, string newName)
     {
         _id = id;
+
+        if (_id == NetworkManager.Instance.GetClient().Id) _isLocalPlayer = true;
     }
 }

@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using RiptideNetworking;
 using UnityEngine;
 
 public class ClientMessages : MonoBehaviour
 {
+    internal enum MessagesId : ushort
+    {
+    
+    }
+    
     #region Send
 
     
@@ -12,18 +15,16 @@ public class ClientMessages : MonoBehaviour
     #endregion
 
     #region Received
-
     [MessageHandler((ushort) ServerMessages.MessagesId.PlayerConnectedToLobby)]
     private static void OnClientConnectedToLobby(Message message)
     {
-        NetworkManager.Instance.AddPlayerToLobby(message.GetUShort());
-    }
+        LobbyManager.Instance.AddPlayerToLobby(message.GetUShort());
+    } 
     
-
-    #endregion
-    
-    public enum ClientMessageId
+    [MessageHandler((ushort) ServerMessages.MessagesId.PlayerDisconnectedFromLobby)]
+    private static void OnClientDisconnectedFromLobby(Message message)
     {
-    
-    }
+        LobbyManager.Instance.RemovePlayerFromLobby(message.GetUShort());
+    } 
+    #endregion
 }

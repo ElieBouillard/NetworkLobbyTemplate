@@ -11,11 +11,6 @@ public class NetworkManager : Singleton<NetworkManager>
     [SerializeField] private bool _useSteam;
     [SerializeField] private ushort _port = 7777;
     [SerializeField] private ushort _maxPlayer = 4;
-    
-    [Header("PlayerObjects")]
-    [SerializeField] private GameObject _lobbyPlayerPrefab;
-    [SerializeField] private GameObject _localPlayerPrefab;
-    [SerializeField] private GameObject _generalPlayerPrefab;
     #endregion
     
     #region Fields
@@ -23,6 +18,7 @@ public class NetworkManager : Singleton<NetworkManager>
     private Client _client; 
     /*Set To Private */ public GameState _gameState = GameState.OffLine;
     private Dictionary<ushort, PlayerIdentity> _players = new Dictionary<ushort, PlayerIdentity>();
+    private PlayerIdentity  _localPlayerLobby;
     private ClientMessages _clientMessages;
     private ServerMessages _serverMessages;
     #endregion
@@ -35,6 +31,11 @@ public class NetworkManager : Singleton<NetworkManager>
     public Dictionary<ushort, PlayerIdentity> GetPlayers() => _players;
     public ClientMessages GetClientMessages() => _clientMessages;
     public ServerMessages GetServerMessages() => _serverMessages;
+    #endregion
+
+    #region Setters
+    public void SetLocalPlayer(PlayerIdentity player) => _localPlayerLobby = player;
+
     #endregion
     
     protected override void Awake()
@@ -90,7 +91,7 @@ public class NetworkManager : Singleton<NetworkManager>
         _server = new Server();
 
         _server.ClientConnected += ServerOnClientConnected;
-        _server.ClientDisconnected += ServerOnClientDiconnected;
+        _server.ClientDisconnected += ServerOnClientDisconnected;
     }
     
     #region ClientCallbacks
@@ -103,9 +104,17 @@ public class NetworkManager : Singleton<NetworkManager>
 
     private void ClientOnDisconnected(object sender, EventArgs e)
     {
-        _gameState = GameState.OffLine;
+        switch (_gameState)
+        {
+            case GameState.Lobby:
+                LobbyManager.Instance.ClearLobby();
+                PanelManager.Instance.EnablePanel(PanelType.MainMenu);
+                break;
+            case GameState.Gameplay:
+                break;
+        }
         
-        PanelManager.Instance.EnablePanel(PanelType.MainMenu);
+        _gameState = GameState.OffLine;
     }
     
     private void ClientOnConnectionFailed(object sender, EventArgs e)
@@ -129,8 +138,6 @@ public class NetworkManager : Singleton<NetworkManager>
     {
         switch (_gameState)
         {
-            case GameState.OffLine:
-                break;
             case GameState.Lobby:
                 _serverMessages.SendPlayerConnectedToLobby(e.Client.Id);
                 break;
@@ -140,9 +147,16 @@ public class NetworkManager : Singleton<NetworkManager>
         }
     }
     
-    private void ServerOnClientDiconnected(object sender, ClientDisconnectedEventArgs e)
+    private void ServerOnClientDisconnected(object sender, ClientDisconnectedEventArgs e)
     {
-        
+        switch (_gameState)
+        {
+            case GameState.Lobby:
+                _serverMessages.SendPlayerDisconnectedFromLobby(e.Id);
+                break;
+            case GameState.Gameplay:
+                break;
+        }
     }
     #endregion
 
@@ -169,14 +183,6 @@ public class NetworkManager : Singleton<NetworkManager>
 
     #region ServerOnClientFunctions
 
-    public void AddPlayerToLobby(ushort newPlayerId)
-    {
-        GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, SpawnPointsManager.Instance.SpawnPointsCoord[_players.Count], Quaternion.identity);
-        PlayerIdentity playerIdentityInstance = playerInstance.GetComponent<PlayerIdentity>();
-        playerIdentityInstance.Initialize(newPlayerId);
-        
-        _players.Add(newPlayerId, playerIdentityInstance);
-    }
     #endregion
 }
 
