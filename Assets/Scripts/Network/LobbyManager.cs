@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,12 @@ public class LobbyManager : Singleton<LobbyManager>
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _lobbyPlayerPrefab;
     [SerializeField] private GameObject _startButton;
-    
+
+    private void Start()
+    {
+        _startButton.GetComponent<Button>().onClick.AddListener(NetworkManager.Instance.StartGame);
+    }
+
     public void AddPlayerToLobby(ushort newPlayerId)
     {
         NetworkManager networkManager = NetworkManager.Instance;

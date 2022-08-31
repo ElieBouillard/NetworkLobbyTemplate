@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RiptideNetworking;
 using RiptideNetworking.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : Singleton<NetworkManager>
 {
@@ -159,7 +160,7 @@ public class NetworkManager : Singleton<NetworkManager>
     }
     #endregion
 
-    #region ClientFunctions
+    #region Client
     public void StartHost()
     {
         _server.Start(_port, _maxPlayer);
@@ -178,10 +179,23 @@ public class NetworkManager : Singleton<NetworkManager>
         
         _server.Stop();
     }
+
+    public void StartGame()
+    {
+        if (_localPlayer.GetId() != 1) return;
+        
+        _clientMessages.SendStartGame();
+    }
+
+    public void OnServerStartGame()
+    {
+        _gameState = GameState.Gameplay;
+        SceneManager.LoadScene("GameplayScene", LoadSceneMode.Single);
+    }
     #endregion
 
-    #region ServerOnClientFunctions
-
+    #region Server
+    
     #endregion
 }
 

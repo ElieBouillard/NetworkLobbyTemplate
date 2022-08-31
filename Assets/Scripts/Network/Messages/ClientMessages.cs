@@ -5,13 +5,15 @@ public class ClientMessages : MonoBehaviour
 {
     internal enum MessagesId : ushort
     {
-    
+        StartGame = 1,
     }
     
     #region Send
-
-    
-
+    public void SendStartGame()
+    {
+        Message message = Message.Create(MessageSendMode.reliable, MessagesId.StartGame);
+        NetworkManager.Instance.GetClient().Send(message);
+    }
     #endregion
 
     #region Received
@@ -25,6 +27,12 @@ public class ClientMessages : MonoBehaviour
     private static void OnClientDisconnectedFromLobby(Message message)
     {
         LobbyManager.Instance.RemovePlayerFromLobby(message.GetUShort());
+    } 
+    
+    [MessageHandler((ushort) ServerMessages.MessagesId.StartGame)]
+    private static void OnServerStartGame(Message message)
+    {
+        NetworkManager.Instance.OnServerStartGame();
     } 
     #endregion
 }

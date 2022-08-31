@@ -16,6 +16,6 @@ public class GameManager : Singleton<GameManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        
+        Debug.Log("PlayerReady");
     }
 }

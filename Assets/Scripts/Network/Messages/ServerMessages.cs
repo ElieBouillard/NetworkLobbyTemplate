@@ -7,6 +7,7 @@ public class ServerMessages : MonoBehaviour
     {
         PlayerConnectedToLobby = 1,
         PlayerDisconnectedFromLobby,
+        StartGame,
     }
 
     #region Send
@@ -30,11 +31,21 @@ public class ServerMessages : MonoBehaviour
         message.AddUShort(playerId);
         NetworkManager.Instance.GetServer().SendToAll(message, playerId);
     }
+
+    private static void SendHostStartGame()
+    {
+        Message message = Message.Create(MessageSendMode.reliable, MessagesId.StartGame);
+        NetworkManager.Instance.GetServer().SendToAll(message);
+    }
     #endregion
 
     #region Received
 
-    
-
+    [MessageHandler((ushort) ClientMessages.MessagesId.StartGame)]
+    private static void OnClientStartGame(ushort id, Message message)
+    {
+        if(id != 1) return;
+        SendHostStartGame();
+    }
     #endregion
 }
