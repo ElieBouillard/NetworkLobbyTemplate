@@ -7,8 +7,7 @@ using UnityEngine;
 public class NetworkManager : Singleton<NetworkManager>
 {
     #region UnityInspector
-    [Header("NetworkSettings")] [Space(20)] 
-    [SerializeField] private bool _useSteam;
+    [Header("NetworkSettings")] [Space(10)]
     [SerializeField] private ushort _port = 7777;
     [SerializeField] private ushort _maxPlayer = 4;
     #endregion
@@ -18,23 +17,23 @@ public class NetworkManager : Singleton<NetworkManager>
     private Client _client; 
     /*Set To Private */ public GameState _gameState = GameState.OffLine;
     private Dictionary<ushort, PlayerIdentity> _players = new Dictionary<ushort, PlayerIdentity>();
-    private PlayerIdentity  _localPlayerLobby;
+    private PlayerIdentity  _localPlayer;
     private ClientMessages _clientMessages;
     private ServerMessages _serverMessages;
     #endregion
 
     #region Getters
-    public bool GetUseSteam() => _useSteam;
     public Server GetServer() => _server;
     public Client GetClient() => _client;
     public GameState GetGameState() => _gameState;
     public Dictionary<ushort, PlayerIdentity> GetPlayers() => _players;
+    public PlayerIdentity GetLocalPlayer() => _localPlayer;
     public ClientMessages GetClientMessages() => _clientMessages;
     public ServerMessages GetServerMessages() => _serverMessages;
     #endregion
 
     #region Setters
-    public void SetLocalPlayer(PlayerIdentity player) => _localPlayerLobby = player;
+    public void SetLocalPlayer(PlayerIdentity player) => _localPlayer = player;
 
     #endregion
     

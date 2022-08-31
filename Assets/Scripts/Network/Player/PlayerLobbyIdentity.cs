@@ -10,5 +10,7 @@ public class PlayerLobbyIdentity : PlayerIdentity
         base.Initialize(id, newName);
 
         _playerPseudoText.text = newName;
+        
+        if(id == NetworkManager.Instance.GetClient().Id) LobbyManager.Instance.SetStartGameButton(id == 1); 
     }
 }

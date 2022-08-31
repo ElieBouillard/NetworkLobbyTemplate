@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyManager : Singleton<LobbyManager>
 {
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _lobbyPlayerPrefab;
+    [SerializeField] private GameObject _startButton;
     
     public void AddPlayerToLobby(ushort newPlayerId)
     {
@@ -14,7 +16,7 @@ public class LobbyManager : Singleton<LobbyManager>
         
         playerLobbyIdentityInstance.Initialize(newPlayerId, GetPlayerName(networkManager.GetClient().Id, newPlayerId));
 
-        if (newPlayerId == networkManager.GetClient().Id) { }
+        if (newPlayerId == networkManager.GetClient().Id){ networkManager.SetLocalPlayer(playerLobbyIdentityInstance); }
 
         networkManager.GetPlayers().Add(newPlayerId, playerLobbyIdentityInstance);
     }
@@ -65,5 +67,10 @@ public class LobbyManager : Singleton<LobbyManager>
         string statueName = playerId == clientId ? "Local" : "Client";
         
         return $"{statueName} : {playerId}";
+    }
+
+    public void SetStartGameButton(bool value)
+    {
+        _startButton.SetActive(value);
     }
 }
