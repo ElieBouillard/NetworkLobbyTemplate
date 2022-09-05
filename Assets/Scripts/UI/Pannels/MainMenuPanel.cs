@@ -9,6 +9,11 @@ public class MainMenuPanel : Panel
     [SerializeField] private Button _optionsButton;
     [SerializeField] private Button _quitButton;
 
+    private void Start()
+    {
+        _joinGameButton.gameObject.SetActive(!NetworkManager.Instance.GetUseSteam());
+    }
+    
     protected override void AssignButtonsReference()
     {
         _createGameButton.onClick.AddListener(OnClickCreateGame);

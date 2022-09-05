@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using RiptideNetworking;
+using RiptideNetworking.Transports.SteamTransport;
 using RiptideNetworking.Utils;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SteamClient = RiptideNetworking.Transports.SteamTransport.SteamClient;
 
 public class NetworkManager : Singleton<NetworkManager>
 {
     #region UnityInspector
     [Header("NetworkSettings")] [Space(10)]
+    [SerializeField] private bool _useSteam;
     [SerializeField] private ushort _port = 7777;
     [SerializeField] private ushort _maxPlayer = 4;
     #endregion
@@ -24,6 +28,7 @@ public class NetworkManager : Singleton<NetworkManager>
     #endregion
 
     #region Getters
+    public bool GetUseSteam() => _useSteam;
     public Server GetServer() => _server;
     public Client GetClient() => _client;
     public GameState GetGameState() => _gameState;
@@ -31,6 +36,7 @@ public class NetworkManager : Singleton<NetworkManager>
     public PlayerIdentity GetLocalPlayer() => _localPlayer;
     public ClientMessages GetClientMessages() => _clientMessages;
     public ServerMessages GetServerMessages() => _serverMessages;
+    public ushort GetMaxPlayer() => _maxPlayer;
     #endregion
 
     #region Setters
@@ -44,14 +50,17 @@ public class NetworkManager : Singleton<NetworkManager>
 
         _clientMessages = gameObject.AddComponent<ClientMessages>();
         _serverMessages = gameObject.AddComponent<ServerMessages>();
+
+        if (_useSteam) gameObject.AddComponent<SteamManager>();
     }
 
     private void Start()
     {
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
-        
-        InitializeClient();
-        InitializeServer();
+
+        SteamServer steamServer = new SteamServer();
+        InitializeClient(steamServer);
+        InitializeServer(steamServer);
     }
 
     private void FixedUpdate()
@@ -75,9 +84,9 @@ public class NetworkManager : Singleton<NetworkManager>
         }
     }
 
-    private void InitializeClient()
+    private void InitializeClient(SteamServer steamServer)
     {
-        _client = new Client();
+        _client = _useSteam ? new Client(new SteamClient(steamServer)) : new Client();
 
         _client.Connected += ClientOnConnected;
         _client.Disconnected += ClientOnDisconnected;
@@ -86,9 +95,9 @@ public class NetworkManager : Singleton<NetworkManager>
         _client.ClientDisconnected += ClientOnPlayerLeft;
     }
 
-    private void InitializeServer()
+    private void InitializeServer(SteamServer steamServer)
     {
-        _server = new Server();
+        _server = _useSteam ? new Server(steamServer) : new Server();
 
         _server.ClientConnected += ServerOnClientConnected;
         _server.ClientDisconnected += ServerOnClientDisconnected;
@@ -98,7 +107,9 @@ public class NetworkManager : Singleton<NetworkManager>
     private void ClientOnConnected(object sender, EventArgs e)
     {
         _gameState = GameState.Lobby;
-        
+
+        _clientMessages.SendClientConnected(_useSteam ? (ulong)SteamUser.GetSteamID() : new ulong());
+
         PanelManager.Instance.EnablePanel(PanelType.Lobby);
     }
 
@@ -115,6 +126,9 @@ public class NetworkManager : Singleton<NetworkManager>
         }
         
         _gameState = GameState.OffLine;
+        
+        if(!_useSteam) return;
+        SteamLobbyManager.Instance.LeaveLobby();
     }
     
     private void ClientOnConnectionFailed(object sender, EventArgs e)
@@ -138,9 +152,6 @@ public class NetworkManager : Singleton<NetworkManager>
     {
         switch (_gameState)
         {
-            case GameState.Lobby:
-                _serverMessages.SendPlayerConnectedToLobby(e.Client.Id);
-                break;
             case GameState.Gameplay:
                 _server.DisconnectClient(e.Client.Id);
                 break;
@@ -163,12 +174,20 @@ public class NetworkManager : Singleton<NetworkManager>
     #region Client
     public void StartHost()
     {
-        _server.Start(_port, _maxPlayer);
-        _client.Connect($"127.0.0.1:{_port}");
+        if (_useSteam)
+        {
+            SteamLobbyManager.Instance.CreateLobby(); ;
+        }
+        else
+        {
+            _server.Start(_port, _maxPlayer);
+            _client.Connect($"127.0.0.1:{_port}");
+        }
     }
     
     public void JoinLobby()
     {
+        if (_useSteam) return;
         _client.Connect($"127.0.0.1:{_port}");
     }
     

@@ -1,27 +1,34 @@
 using System;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyManager : Singleton<LobbyManager>
 {
+    public LobbyPanel LobbyPanel;
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _lobbyPlayerPrefab;
-    [SerializeField] private GameObject _startButton;
 
-    private void Start()
+    protected override void Awake()
     {
-        _startButton.GetComponent<Button>().onClick.AddListener(NetworkManager.Instance.StartGame);
+        base.Awake();
+
+        if (NetworkManager.Instance.GetUseSteam())
+        {
+            gameObject.AddComponent<SteamLobbyManager>();
+        }
     }
 
-    public void AddPlayerToLobby(ushort newPlayerId)
+    public void AddPlayerToLobby(ushort newPlayerId, ulong steamId)
     {
         NetworkManager networkManager = NetworkManager.Instance;
         
         GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, _spawnPoints[networkManager.GetPlayers().Count].position, Quaternion.identity);
         PlayerLobbyIdentity playerLobbyIdentityInstance = playerInstance.GetComponent<PlayerLobbyIdentity>();
         
-        playerLobbyIdentityInstance.Initialize(newPlayerId, GetPlayerName(networkManager.GetClient().Id, newPlayerId));
-
+        if(!networkManager.GetUseSteam()) playerLobbyIdentityInstance.Initialize(newPlayerId, GetPlayerName(networkManager.GetClient().Id, newPlayerId));
+        else playerLobbyIdentityInstance.Initialize(newPlayerId, steamId);
+        
         if (newPlayerId == networkManager.GetClient().Id){ networkManager.SetLocalPlayer(playerLobbyIdentityInstance); }
 
         networkManager.GetPlayers().Add(newPlayerId, playerLobbyIdentityInstance);
@@ -73,10 +80,5 @@ public class LobbyManager : Singleton<LobbyManager>
         string statueName = playerId == clientId ? "Local" : "Client";
         
         return $"{statueName} : {playerId}";
-    }
-
-    public void SetStartGameButton(bool value)
-    {
-        _startButton.SetActive(value);
     }
 }

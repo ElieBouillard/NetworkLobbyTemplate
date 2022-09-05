@@ -11,17 +11,19 @@ public class ServerMessages : MonoBehaviour
     }
 
     #region Send
-    public void SendPlayerConnectedToLobby(ushort newPlayerId)
+    public static void SendPlayerConnectedToLobby(ushort newPlayerId, ulong steamId)
     {
         foreach (var player in NetworkManager.Instance.GetPlayers())
         {
             Message message1 = Message.Create(MessageSendMode.reliable, MessagesId.PlayerConnectedToLobby);
-            message1.Add(player.Value.GetId());
+            message1.AddUShort(player.Value.GetId());
+            message1.AddULong(player.Value.GetSteamId());
             NetworkManager.Instance.GetServer().Send(message1, newPlayerId);
         }
         
         Message message2 = Message.Create(MessageSendMode.reliable, MessagesId.PlayerConnectedToLobby);
-        message2.Add(newPlayerId);
+        message2.AddUShort(newPlayerId);
+        message2.AddULong(steamId);
         NetworkManager.Instance.GetServer().SendToAll(message2);
     }
     
@@ -40,6 +42,11 @@ public class ServerMessages : MonoBehaviour
     #endregion
 
     #region Received
+    [MessageHandler((ushort) ClientMessages.MessagesId.ClientConnected)]
+    private static void OnClientConnected(ushort id, Message message)
+    {
+        SendPlayerConnectedToLobby(id, message.GetULong());
+    }
 
     [MessageHandler((ushort) ClientMessages.MessagesId.StartGame)]
     private static void OnClientStartGame(ushort id, Message message)

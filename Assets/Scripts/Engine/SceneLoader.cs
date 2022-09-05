@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.VersionControl;
+#endif
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,6 +25,7 @@ public class SceneLoader : MonoBehaviour
         
     }
 
+#if UNITY_EDITOR
     [MenuItem("SceneLoader/Play Build")]
     private static void PlayBuild()
     {
@@ -46,6 +47,7 @@ public class SceneLoader : MonoBehaviour
     {
         EditorSceneManager.OpenScene("Assets/Scenes/GameplayScene.unity", OpenSceneMode.Single);
     }
+#endif
 }
 
 public enum Scenes

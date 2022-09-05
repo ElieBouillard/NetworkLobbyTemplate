@@ -5,10 +5,18 @@ public class ClientMessages : MonoBehaviour
 {
     internal enum MessagesId : ushort
     {
-        StartGame = 1,
+        ClientConnected = 1,
+        StartGame,
     }
     
     #region Send
+    public void SendClientConnected(ulong steamId)
+    {
+        Message message = Message.Create(MessageSendMode.reliable, MessagesId.ClientConnected);
+        message.AddULong(steamId);
+        NetworkManager.Instance.GetClient().Send(message);
+    }
+    
     public void SendStartGame()
     {
         Message message = Message.Create(MessageSendMode.reliable, MessagesId.StartGame);
@@ -20,7 +28,7 @@ public class ClientMessages : MonoBehaviour
     [MessageHandler((ushort) ServerMessages.MessagesId.PlayerConnectedToLobby)]
     private static void OnClientConnectedToLobby(Message message)
     {
-        LobbyManager.Instance.AddPlayerToLobby(message.GetUShort());
+        LobbyManager.Instance.AddPlayerToLobby(message.GetUShort(), message.GetULong());
     } 
     
     [MessageHandler((ushort) ServerMessages.MessagesId.PlayerDisconnectedFromLobby)]

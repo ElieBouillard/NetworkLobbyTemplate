@@ -199,7 +199,6 @@ namespace RiptideNetworking.Transports.SteamTransport
                         Handle(message, messageHeader);
                     else
                     {
-                        Debug.Log("Ok this actually happens");
                         actionQueue.Add(() => Handle(message, messageHeader));
                     }
                 }

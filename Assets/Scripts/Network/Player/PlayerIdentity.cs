@@ -7,11 +7,13 @@ public class PlayerIdentity : MonoBehaviour
 {
     #region Fields
     private ushort _id;
+    protected ulong _steamId;
     private bool _isLocalPlayer;
     #endregion
     
     #region Getters
     public ushort GetId() => _id;
+    public ulong GetSteamId() => _steamId;
     public bool IsLocalPlayer() => _isLocalPlayer;
     #endregion
 
