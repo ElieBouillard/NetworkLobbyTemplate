@@ -20,8 +20,6 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
     #region Getters
     public CSteamID GetLobbyId() => _lobbyId;
     #endregion
-
-
     
     private void Start()
     {
@@ -65,14 +63,14 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
     {
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
-    
+
     private void OnLobbyEnter(LobbyEnter_t callback)
     {
         if (NetworkManager.Instance.GetServer().IsRunning) return;
 
         _lobbyId = new CSteamID(callback.m_ulSteamIDLobby);
-        string hostAdress = SteamMatchmaking.GetLobbyData(_lobbyId, _hostAddressKey);
+        string hostAddress = SteamMatchmaking.GetLobbyData(_lobbyId, _hostAddressKey);
 
-        NetworkManager.Instance.GetClient().Connect(hostAdress);
+        NetworkManager.Instance.GetClient().Connect(hostAddress);
     }
 }

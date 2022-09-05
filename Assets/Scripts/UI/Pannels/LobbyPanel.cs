@@ -13,7 +13,7 @@ public class LobbyPanel : Panel
     [SerializeField] private Button _openFriendsListButton;
     [SerializeField] private Button _closeFriendsListButton;
     [SerializeField] private Transform _friendsListPanel;
-    
+
     protected override void AssignButtonsReference()
     {
         _startGameButton.onClick.AddListener(OnClickStartGame);
