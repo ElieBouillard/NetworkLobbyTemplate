@@ -51,7 +51,11 @@ public class NetworkManager : Singleton<NetworkManager>
         _clientMessages = gameObject.AddComponent<ClientMessages>();
         _serverMessages = gameObject.AddComponent<ServerMessages>();
 
-        if (_useSteam) gameObject.AddComponent<SteamManager>();
+        if (_useSteam)
+        {
+            gameObject.AddComponent<SteamManager>();
+            gameObject.AddComponent<SteamLobbyManager>();
+        }
     }
 
     private void Start()

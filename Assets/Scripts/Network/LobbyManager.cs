@@ -9,16 +9,6 @@ public class LobbyManager : Singleton<LobbyManager>
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _lobbyPlayerPrefab;
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        if (NetworkManager.Instance.GetUseSteam())
-        {
-            gameObject.AddComponent<SteamLobbyManager>();
-        }
-    }
-
     public void AddPlayerToLobby(ushort newPlayerId, ulong steamId)
     {
         NetworkManager networkManager = NetworkManager.Instance;
