@@ -126,6 +126,7 @@ public class NetworkManager : Singleton<NetworkManager>
                 PanelManager.Instance.EnablePanel(PanelType.MainMenu);
                 break;
             case GameState.Gameplay:
+                SceneManager.LoadScene("StartMenuScene", LoadSceneMode.Single);
                 break;
         }
         
@@ -197,17 +198,9 @@ public class NetworkManager : Singleton<NetworkManager>
     
     public void Leave()
     {
-        switch (_gameState)
-        {
-            case  GameState.Lobby:
-                _client.Disconnect();
-                ClientOnDisconnected(new object(), EventArgs.Empty);
-        
-                _server.Stop();
-                break;
-        }
-        
-
+        _client.Disconnect();
+        ClientOnDisconnected(new object(), EventArgs.Empty);
+        _server.Stop();
     }
 
     public void StartGame()
