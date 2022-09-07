@@ -35,7 +35,7 @@ public class LobbyPanel : Panel
 
     private void OnClickLeaveLobby()
     {
-        NetworkManager.Instance.LeaveLobby();
+        NetworkManager.Instance.Leave();
     }
 
     private void EnableFriendsList(bool value)

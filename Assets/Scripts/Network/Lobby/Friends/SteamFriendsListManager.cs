@@ -15,7 +15,7 @@ public class SteamFriendsListManager : MonoBehaviour
     private List<CSteamID> _friends = new List<CSteamID>();
     private void Start()
     {
-        if(NetworkManager.Instance.GetUseSteam()) GrabFriends();
+        if(NetworkManager.Instance.GetUseSteam()) StartCoroutine(RefreshFriendsList());
     }
 
     private void GrabFriends()
@@ -54,7 +54,7 @@ public class SteamFriendsListManager : MonoBehaviour
     private SteamFriendProfile AddFriendToList()
     {
         SteamFriendProfile friendTemp = Instantiate(_friendProfilePrefab, _content);
-        
+
         Vector3 localPosition = friendTemp.transform.localPosition;
         localPosition = new Vector3(localPosition.x, _yOffset, localPosition.z);
         friendTemp.transform.localPosition = localPosition;
@@ -65,5 +65,24 @@ public class SteamFriendsListManager : MonoBehaviour
         
         _yOffset -= 75f;
         return friendTemp;
+    }
+
+    private IEnumerator RefreshFriendsList()
+    {
+        _yOffset = -25f;
+
+        _content.sizeDelta = new Vector2(_content.sizeDelta.x, 0);
+        
+        int friendsDisplaysCount = _content.childCount;
+
+        for (int i = 0; i < friendsDisplaysCount; i++)
+        {
+            Destroy(_content.GetChild(i).gameObject);
+        }
+        
+        _friends.Clear();
+        GrabFriends();
+        yield return new WaitForSeconds(5);
+        StartCoroutine(RefreshFriendsList());
     }
 }

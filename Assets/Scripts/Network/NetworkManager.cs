@@ -81,7 +81,7 @@ public class NetworkManager : Singleton<NetworkManager>
             case GameState.OffLine:
                 break;
             case GameState.Lobby:
-                LeaveLobby();
+                Leave();
                 break;
             case GameState.Gameplay:
                 break;
@@ -195,12 +195,19 @@ public class NetworkManager : Singleton<NetworkManager>
         _client.Connect($"127.0.0.1:{_port}");
     }
     
-    public void LeaveLobby()
+    public void Leave()
     {
-        _client.Disconnect();
-        ClientOnDisconnected(new object(), EventArgs.Empty);
+        switch (_gameState)
+        {
+            case  GameState.Lobby:
+                _client.Disconnect();
+                ClientOnDisconnected(new object(), EventArgs.Empty);
         
-        _server.Stop();
+                _server.Stop();
+                break;
+        }
+        
+
     }
 
     public void StartGame()
