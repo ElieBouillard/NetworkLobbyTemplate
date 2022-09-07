@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Steamworks;
 using UnityEngine;
 
-public class SteamInvitationsManager : MonoBehaviour
+public class SteamInvitationsManager : Singleton<SteamInvitationsManager>
 {
     [SerializeField] private RectTransform _content;
     [SerializeField] private SteamInvitation _invitationPrefab;
@@ -14,18 +15,29 @@ public class SteamInvitationsManager : MonoBehaviour
 
     protected Callback<LobbyInvite_t> InviteLobby;
     
-    private List<SteamInvitation> _invitations = new List<SteamInvitation>();
-    private void Awake()
+    private readonly List<SteamInvitation> _invitations = new List<SteamInvitation>();
+    protected virtual void Awake()
     {
+        base.Awake();
+        
         _rectTransform = GetComponent<RectTransform>();
         InviteLobby = Callback<LobbyInvite_t>.Create(OnInvitationReceived);
     }
-    
-    
-    public void OnInvitationReceived(LobbyInvite_t lobbyInfo)
+
+    [ContextMenu("uwu")]
+    public void uwu()
     {
+        LobbyInvite_t lobbyInfo = new LobbyInvite_t();
+        lobbyInfo.m_ulSteamIDUser = 76561198307018729;
+        OnInvitationReceived(lobbyInfo);
+    }
+    
+    private void OnInvitationReceived(LobbyInvite_t lobbyInfo)
+    {
+        if (_invitations.Count == 0) EnablePanel(true);
+        
         SteamInvitation invitationTemp = AddInvitation();
-        invitationTemp.Initialize((CSteamID)lobbyInfo.m_ulSteamIDUser);
+        invitationTemp.Initialize(lobbyInfo);
         _invitations.Add(invitationTemp);
     }
     
@@ -38,7 +50,7 @@ public class SteamInvitationsManager : MonoBehaviour
         {
             Vector2 rectTransformDeltaSize = _rectTransform.sizeDelta;
             rectTransformDeltaSize = new Vector2(rectTransformDeltaSize.x, rectTransformDeltaSize.y + 125f);
-            _rectTransform.sizeDelta = rectTransformDeltaSize;
+            _rectTransform.DOSizeDelta(rectTransformDeltaSize, 0.15f);
         }
 
         Vector2 contentDeltaSize = _content.sizeDelta;
@@ -51,5 +63,43 @@ public class SteamInvitationsManager : MonoBehaviour
         
         _offSetY -= 125f;
         return invitationTemp;
+    }
+
+    public void RemoveInvitation(SteamInvitation thisInvitation)
+    {
+        if (!_invitations.Contains(thisInvitation)) return;
+        
+        Destroy(thisInvitation.gameObject);
+        _invitations.Remove(thisInvitation);
+        if(_invitations.Count == 0) EnablePanel(false);
+        RefreshDisplay();
+    }
+
+    private void RefreshDisplay()
+    {
+        int invitationsCount = _invitations.Count;
+        
+        if (invitationsCount < 3)
+        {
+            Vector2 rectTransformDeltaSize = _rectTransform.sizeDelta;
+            rectTransformDeltaSize = new Vector2(rectTransformDeltaSize.x, 125 * invitationsCount + 50);
+            _rectTransform.DOSizeDelta(rectTransformDeltaSize, 0.15f);
+        }
+        
+        Vector2 contentDeltaSize = _content.sizeDelta;
+        contentDeltaSize = new Vector2(contentDeltaSize.x, 125 * invitationsCount);
+        _content.sizeDelta = contentDeltaSize;
+
+        _offSetY = -25f - 125f * invitationsCount;
+        
+        for (int i = 0; i < _invitations.Count; i++)
+        {
+            _invitations[i].gameObject.transform.DOLocalMoveY(-125 * i + -25f , 0.1f);
+        }
+    }
+
+    private void EnablePanel(bool value)
+    {
+        transform.DOMoveX(value ? 0f : -500f, 0.2f);
     }
 }

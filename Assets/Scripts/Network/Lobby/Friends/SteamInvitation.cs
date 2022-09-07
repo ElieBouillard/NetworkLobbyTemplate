@@ -14,17 +14,25 @@ public class SteamInvitation : MonoBehaviour
     [SerializeField] private Button _declineButton;
 
     private CSteamID _friendSteamId;
+    private ulong _lobbyId;
     
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
+
+    private void Awake()
+    {
+        _acceptButton.onClick.AddListener(AcceptInvite);
+        _declineButton.onClick.AddListener(DeclineInvite);
+    }
 
     private void Start()
     {
         ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnPlayerAvatarLoaded);
     }
 
-    public void Initialize(CSteamID friendSteamID)
+    public void Initialize(LobbyInvite_t lobbyInfo)
     {
-        _friendSteamId = friendSteamID;
+        _friendSteamId = (CSteamID)lobbyInfo.m_ulSteamIDUser;
+        _lobbyId = lobbyInfo.m_ulSteamIDLobby;
         
         string friendName = SteamFriends.GetFriendPersonaName(_friendSteamId);
         _profilePseudoText.text = friendName;
@@ -32,6 +40,18 @@ public class SteamInvitation : MonoBehaviour
         LoadFriendAvatar(); 
     }
 
+    private void AcceptInvite()
+    {
+        NetworkManager.Instance.Leave();
+        SteamMatchmaking.JoinLobby((CSteamID)_lobbyId);
+        DeclineInvite();
+    }
+
+    private void DeclineInvite()
+    {
+        SteamInvitationsManager.Instance.RemoveInvitation(this);
+    }
+    
     public void LoadFriendAvatar()
     {
         int _playerAvatarId = SteamFriends.GetLargeFriendAvatar(_friendSteamId);
