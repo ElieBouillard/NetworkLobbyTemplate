@@ -38,10 +38,22 @@ public class ClientMessages : MonoBehaviour
         LobbyManager.Instance.AddPlayerToLobby(message.GetUShort(), message.GetULong());
     } 
     
-    [MessageHandler((ushort) ServerMessages.MessagesId.PlayerDisconnectedFromLobby)]
-    private static void OnClientDisconnectedFromLobby(Message message)
+    [MessageHandler((ushort) ServerMessages.MessagesId.PlayerDisconnected)]
+    private static void OnClientDisconnected(Message message)
     {
-        LobbyManager.Instance.RemovePlayerFromLobby(message.GetUShort());
+        ushort id = message.GetUShort();
+        
+        switch (NetworkManager.Instance.GetGameState())
+        {
+            case GameState.Lobby:
+                LobbyManager.Instance.RemovePlayerFromLobby(id);
+                break;
+            
+            case GameState.Gameplay:
+                GameManager.Instance.RemovePlayerFromGame(id);
+                break;
+        }
+        
     } 
     
     [MessageHandler((ushort) ServerMessages.MessagesId.StartGame)]

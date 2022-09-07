@@ -83,6 +83,7 @@ public class NetworkManager : Singleton<NetworkManager>
                 Leave();
                 break;
             case GameState.Gameplay:
+                Leave();
                 break;
         }
     }
@@ -165,14 +166,7 @@ public class NetworkManager : Singleton<NetworkManager>
     
     private void ServerOnClientDisconnected(object sender, ClientDisconnectedEventArgs e)
     {
-        switch (_gameState)
-        {
-            case GameState.Lobby:
-                _serverMessages.SendPlayerDisconnectedFromLobby(e.Id);
-                break;
-            case GameState.Gameplay:
-                break;
-        }
+        _serverMessages.SendPlayerDisconnected(e.Id);
     }
     #endregion
 

@@ -6,7 +6,7 @@ public class ServerMessages : MonoBehaviour
     internal enum MessagesId : ushort
     {
         PlayerConnectedToLobby = 1,
-        PlayerDisconnectedFromLobby,
+        PlayerDisconnected,
         StartGame,
         InitializeGameplay,
         PlayerDisconnectedFromGame,
@@ -29,9 +29,9 @@ public class ServerMessages : MonoBehaviour
         NetworkManager.Instance.GetServer().SendToAll(message2);
     }
     
-    public void SendPlayerDisconnectedFromLobby(ushort playerId)
+    public void SendPlayerDisconnected(ushort playerId)
     {
-        Message message = Message.Create(MessageSendMode.reliable, MessagesId.PlayerDisconnectedFromLobby);
+        Message message = Message.Create(MessageSendMode.reliable, MessagesId.PlayerDisconnected);
         message.AddUShort(playerId);
         NetworkManager.Instance.GetServer().SendToAll(message, playerId);
     }
