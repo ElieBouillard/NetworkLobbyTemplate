@@ -9,19 +9,19 @@ public class LobbyManager : Singleton<LobbyManager>
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _lobbyPlayerPrefab;
 
-    public void AddPlayerToLobby(ushort newPlayerId, ulong steamId)
+    public void AddPlayerToLobby(ushort playerId, ulong steamId)
     {
         NetworkManager networkManager = NetworkManager.Instance;
         
         GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, _spawnPoints[networkManager.GetPlayers().Count].position, Quaternion.identity);
         PlayerLobbyIdentity playerLobbyIdentityInstance = playerInstance.GetComponent<PlayerLobbyIdentity>();
         
-        if(!networkManager.GetUseSteam()) playerLobbyIdentityInstance.Initialize(newPlayerId, GetPlayerName(networkManager.GetClient().Id, newPlayerId));
-        else playerLobbyIdentityInstance.Initialize(newPlayerId, steamId);
+        if(!networkManager.GetUseSteam()) playerLobbyIdentityInstance.Initialize(playerId, GetPlayerName(networkManager.GetClient().Id, playerId));
+        else playerLobbyIdentityInstance.Initialize(playerId, steamId);
         
-        if (newPlayerId == networkManager.GetClient().Id){ networkManager.SetLocalPlayer(playerLobbyIdentityInstance); }
+        if (playerId == networkManager.GetClient().Id) networkManager.SetLocalPlayer(playerLobbyIdentityInstance);  
 
-        networkManager.GetPlayers().Add(newPlayerId, playerLobbyIdentityInstance);
+        networkManager.GetPlayers().Add(playerId, playerLobbyIdentityInstance);
     }
 
     public void RemovePlayerFromLobby(ushort playerId)
@@ -54,6 +54,8 @@ public class LobbyManager : Singleton<LobbyManager>
     public void ClearLobby()
     {
         NetworkManager networkManager = NetworkManager.Instance;
+        
+        networkManager.SetLocalPlayer(null);
         
         foreach (var player in networkManager.GetPlayers())
         {

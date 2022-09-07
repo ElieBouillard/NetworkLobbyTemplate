@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
@@ -24,5 +25,12 @@ public class PlayerIdentity : MonoBehaviour
         if (_id == NetworkManager.Instance.GetClient().Id) { _isLocalPlayer = true; }
 
         gameObject.name = newName;
+    }
+    
+    public virtual void Initialize(ushort id, ulong steamId)
+    {
+        Initialize(id, SteamFriends.GetFriendPersonaName((CSteamID)steamId));
+        
+        _steamId = steamId;
     }
 }

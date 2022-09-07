@@ -41,7 +41,6 @@ public class NetworkManager : Singleton<NetworkManager>
 
     #region Setters
     public void SetLocalPlayer(PlayerIdentity player) => _localPlayer = player;
-
     #endregion
     
     protected override void Awake()
@@ -126,6 +125,7 @@ public class NetworkManager : Singleton<NetworkManager>
                 PanelManager.Instance.EnablePanel(PanelType.MainMenu);
                 break;
             case GameState.Gameplay:
+                GameManager.Instance.ClearPlayerInGame();
                 SceneManager.LoadScene("StartMenuScene", LoadSceneMode.Single);
                 break;
         }
