@@ -10,14 +10,17 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private GameObject _localPlayerPrefab;
     [SerializeField] private GameObject _otherPlayerPrefab;
-    
-    protected override void Awake()
-    {
-        base.Awake();
 
+    private void OnEnable()
+    {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
-
+    
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         NetworkManager.Instance.GetClientMessages().SendReady();
