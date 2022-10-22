@@ -18,7 +18,7 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
     #endregion
 
     #region Getters
-    public CSteamID GetLobbyId() => _lobbyId;
+    public CSteamID GetLobbyId => _lobbyId;
     #endregion
     
     private void Start()
@@ -36,7 +36,7 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
 
     public void CreateLobby()
     {
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.Instance.GetMaxPlayer());
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, NetworkManager.Instance.GetMaxPlayer);
     }
     
     public void LeaveLobby()
@@ -51,8 +51,8 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
         _lobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         SteamMatchmaking.SetLobbyData(_lobbyId, _hostAddressKey, SteamUser.GetSteamID().ToString());
         
-        NetworkManager.Instance.GetServer().Start(0,NetworkManager.Instance.GetMaxPlayer());
-        NetworkManager.Instance.GetClient().Connect("127.0.0.1");
+        NetworkManager.Instance.GetServer.Start(0,NetworkManager.Instance.GetMaxPlayer);
+        NetworkManager.Instance.GetClient.Connect("127.0.0.1");
     }
 
     public void JoinLobby(ulong lobbyId)
@@ -66,11 +66,11 @@ public class SteamLobbyManager : Singleton<SteamLobbyManager>
 
     private void OnLobbyEnter(LobbyEnter_t callback)
     {
-        if (NetworkManager.Instance.GetServer().IsRunning) return;
+        if (NetworkManager.Instance.GetServer.IsRunning) return;
 
         _lobbyId = new CSteamID(callback.m_ulSteamIDLobby);
         string hostAddress = SteamMatchmaking.GetLobbyData(_lobbyId, _hostAddressKey);
 
-        NetworkManager.Instance.GetClient().Connect(hostAddress);
+        NetworkManager.Instance.GetClient.Connect(hostAddress);
     }
 }

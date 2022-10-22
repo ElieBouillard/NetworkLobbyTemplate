@@ -15,19 +15,19 @@ public class ClientMessages : MonoBehaviour
     {
         Message message = Message.Create(MessageSendMode.reliable, MessagesId.ClientConnected);
         message.AddULong(steamId);
-        NetworkManager.Instance.GetClient().Send(message);
+        NetworkManager.Instance.GetClient.Send(message);
     }
     
     public void SendStartGame()
     {
         Message message = Message.Create(MessageSendMode.reliable, MessagesId.StartGame);
-        NetworkManager.Instance.GetClient().Send(message);
+        NetworkManager.Instance.GetClient.Send(message);
     }
 
     public void SendReady()
     {
         Message message = Message.Create(MessageSendMode.reliable, MessagesId.Ready);
-        NetworkManager.Instance.GetClient().Send(message);
+        NetworkManager.Instance.GetClient.Send(message);
     }
     #endregion
 
@@ -43,7 +43,7 @@ public class ClientMessages : MonoBehaviour
     {
         ushort id = message.GetUShort();
         
-        switch (NetworkManager.Instance.GetGameState())
+        switch (NetworkManager.Instance.GetGameState)
         {
             case GameState.Lobby:
                 LobbyManager.Instance.RemovePlayerFromLobby(id);

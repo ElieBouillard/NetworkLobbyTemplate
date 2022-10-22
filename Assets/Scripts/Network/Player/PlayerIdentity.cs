@@ -13,16 +13,16 @@ public class PlayerIdentity : MonoBehaviour
     #endregion
     
     #region Getters
-    public ushort GetId() => _id;
-    public ulong GetSteamId() => _steamId;
-    public bool IsLocalPlayer() => _isLocalPlayer;
+    public ushort GetId => _id;
+    public ulong GetSteamId => _steamId;
+    public bool IsLocalPlayer => _isLocalPlayer;
     #endregion
 
     public virtual void Initialize(ushort id, string newName)
     {
         _id = id;
 
-        if (_id == NetworkManager.Instance.GetClient().Id) { _isLocalPlayer = true; }
+        if (_id == NetworkManager.Instance.GetClient.Id) { _isLocalPlayer = true; }
 
         gameObject.name = newName;
     }

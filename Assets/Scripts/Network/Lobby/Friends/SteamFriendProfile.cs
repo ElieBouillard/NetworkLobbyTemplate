@@ -23,7 +23,7 @@ public class SteamFriendProfile : MonoBehaviour
     
     private void OnClickInviteButton()
     {
-        SteamMatchmaking.InviteUserToLobby(SteamLobbyManager.Instance.GetLobbyId(), _friendSteamId);
+        SteamMatchmaking.InviteUserToLobby(SteamLobbyManager.Instance.GetLobbyId, _friendSteamId);
     }
     
     public void Initialize(bool isInGame ,CSteamID friendSteamID)

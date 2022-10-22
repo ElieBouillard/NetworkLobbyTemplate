@@ -13,27 +13,27 @@ public class LobbyManager : Singleton<LobbyManager>
     {
         NetworkManager networkManager = NetworkManager.Instance;
         
-        GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, _spawnPoints[networkManager.GetPlayers().Count].position, Quaternion.identity);
+        GameObject playerInstance = Instantiate(_lobbyPlayerPrefab, _spawnPoints[networkManager.GetPlayers.Count].position, Quaternion.identity);
         PlayerLobbyIdentity playerLobbyIdentityInstance = playerInstance.GetComponent<PlayerLobbyIdentity>();
         
-        if(!networkManager.GetUseSteam()) playerLobbyIdentityInstance.Initialize(playerId, GetPlayerName(networkManager.GetClient().Id, playerId));
+        if(!networkManager.GetUseSteam) playerLobbyIdentityInstance.Initialize(playerId, GetPlayerName(networkManager.GetClient.Id, playerId));
         else playerLobbyIdentityInstance.Initialize(playerId, steamId);
         
-        if (playerId == networkManager.GetClient().Id) networkManager.SetLocalPlayer(playerLobbyIdentityInstance);  
+        if (playerId == networkManager.GetClient.Id) networkManager.SetLocalPlayer(playerLobbyIdentityInstance);  
 
-        networkManager.GetPlayers().Add(playerId, playerLobbyIdentityInstance);
+        networkManager.GetPlayers.Add(playerId, playerLobbyIdentityInstance);
     }
 
     public void RemovePlayerFromLobby(ushort playerId)
     {
         NetworkManager networkManager = NetworkManager.Instance;
 
-        foreach (var player in networkManager.GetPlayers())
+        foreach (var player in networkManager.GetPlayers)
         {
             if (player.Key == playerId)
             {
                 Destroy(player.Value.gameObject);
-                networkManager.GetPlayers().Remove(player.Key);
+                networkManager.GetPlayers.Remove(player.Key);
                 ReorganizeLobbyPosition();
                 return;
             }
@@ -44,7 +44,7 @@ public class LobbyManager : Singleton<LobbyManager>
     {
         NetworkManager networkManager = NetworkManager.Instance;
         int posIndex = 0;
-        foreach (var player in networkManager.GetPlayers())
+        foreach (var player in networkManager.GetPlayers)
         {
             player.Value.gameObject.transform.position = _spawnPoints[posIndex].position;
             posIndex++;
@@ -57,12 +57,12 @@ public class LobbyManager : Singleton<LobbyManager>
         
         networkManager.SetLocalPlayer(null);
         
-        foreach (var player in networkManager.GetPlayers())
+        foreach (var player in networkManager.GetPlayers)
         {
             Destroy(player.Value.gameObject);
         }
             
-        networkManager.GetPlayers().Clear();
+        networkManager.GetPlayers.Clear();
     }
     
     private string GetPlayerName(ushort clientId, ushort playerId)

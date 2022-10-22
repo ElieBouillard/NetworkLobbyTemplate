@@ -28,15 +28,15 @@ public class NetworkManager : Singleton<NetworkManager>
     #endregion
 
     #region Getters
-    public bool GetUseSteam() => _useSteam;
-    public Server GetServer() => _server;
-    public Client GetClient() => _client;
-    public GameState GetGameState() => _gameState;
-    public Dictionary<ushort, PlayerIdentity> GetPlayers() => _players;
-    public PlayerIdentity GetLocalPlayer() => _localPlayer;
-    public ClientMessages GetClientMessages() => _clientMessages;
-    public ServerMessages GetServerMessages() => _serverMessages;
-    public ushort GetMaxPlayer() => _maxPlayer;
+    public bool GetUseSteam => _useSteam;
+    public Server GetServer => _server;
+    public Client GetClient => _client;
+    public GameState GetGameState => _gameState;
+    public Dictionary<ushort, PlayerIdentity> GetPlayers => _players;
+    public PlayerIdentity GetLocalPlayer => _localPlayer;
+    public ClientMessages GetClientMessages => _clientMessages;
+    public ServerMessages GetServerMessages => _serverMessages;
+    public ushort GetMaxPlayer => _maxPlayer;
     #endregion
 
     #region Setters
@@ -199,7 +199,7 @@ public class NetworkManager : Singleton<NetworkManager>
 
     public void StartGame()
     {
-        if (_localPlayer.GetId() != 1) return;
+        if (_localPlayer.GetId != 1) return;
         
         _clientMessages.SendStartGame();
     }
