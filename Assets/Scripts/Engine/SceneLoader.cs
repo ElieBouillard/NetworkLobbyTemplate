@@ -36,6 +36,12 @@ public class SceneLoader : MonoBehaviour
         EditorApplication.EnterPlaymode();
     }
 
+    [MenuItem("SceneLoader/Load LaunchScene")]
+    private static void LoadLaunchScene()
+    {
+        EditorSceneManager.OpenScene("Assets/Scenes/LaunchScene.unity", OpenSceneMode.Single);
+    }
+    
     [MenuItem("SceneLoader/Load StartMenuScene")]
     private static void LoadStartMenuScene()
     {

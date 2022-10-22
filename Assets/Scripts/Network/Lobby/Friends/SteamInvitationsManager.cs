@@ -16,7 +16,7 @@ public class SteamInvitationsManager : Singleton<SteamInvitationsManager>
     protected Callback<LobbyInvite_t> InviteLobby;
     
     private readonly List<SteamInvitation> _invitations = new List<SteamInvitation>();
-    protected virtual void Awake()
+    protected override void Awake()
     {
         base.Awake();
         
@@ -24,14 +24,6 @@ public class SteamInvitationsManager : Singleton<SteamInvitationsManager>
         InviteLobby = Callback<LobbyInvite_t>.Create(OnInvitationReceived);
     }
 
-    [ContextMenu("uwu")]
-    public void uwu()
-    {
-        LobbyInvite_t lobbyInfo = new LobbyInvite_t();
-        lobbyInfo.m_ulSteamIDUser = 76561198307018729;
-        OnInvitationReceived(lobbyInfo);
-    }
-    
     private void OnInvitationReceived(LobbyInvite_t lobbyInfo)
     {
         if (_invitations.Count == 0) EnablePanel(true);
