@@ -25,7 +25,7 @@ public class PanelManager : Singleton<PanelManager>
 
     private void Update()
     {
-        if (_networkManager.GetGameState == GameState.Gameplay)
+        if (_networkManager.GameState == GameState.Gameplay)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {

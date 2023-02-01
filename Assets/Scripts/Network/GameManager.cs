@@ -23,14 +23,14 @@ public class GameManager : Singleton<GameManager>
     
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        NetworkManager.Instance.GetClientMessages.SendReady();
+        NetworkManager.Instance.ClientMessages.SendReady();
     }
 
     public void SpawnPlayers()
     {
         NetworkManager networkManager = NetworkManager.Instance;
 
-        PlayerIdentity[] playersTemp = networkManager.GetPlayers.Values.ToArray();
+        PlayerIdentity[] playersTemp = networkManager.Players.Values.ToArray();
 
         foreach (var player in playersTemp)
         {
@@ -42,13 +42,13 @@ public class GameManager : Singleton<GameManager>
     {
         NetworkManager networkManager = NetworkManager.Instance;
 
-        GameObject playerObject = playerId == networkManager.GetClient.Id ? _localPlayerPrefab : _otherPlayerPrefab;
+        GameObject playerObject = playerId == networkManager.Client.Id ? _localPlayerPrefab : _otherPlayerPrefab;
 
         Transform spawnPoint = null;
         
-        for (int i = 0; i < networkManager.GetPlayers.Values.ToArray().Length; i++)
+        for (int i = 0; i < networkManager.Players.Values.ToArray().Length; i++)
         {
-            if (networkManager.GetPlayers.Values.ToArray()[i].GetId == playerId)
+            if (networkManager.Players.Values.ToArray()[i].GetId == playerId)
             {
                 spawnPoint = _spawnPoints[i];
                 break;
@@ -58,39 +58,33 @@ public class GameManager : Singleton<GameManager>
         GameObject playerTemp = Instantiate(playerObject, spawnPoint.position ,spawnPoint.rotation);
         PlayerGameIdentity playerIdentityTemp = playerTemp.GetComponent<PlayerGameIdentity>();
 
-        if(networkManager.GetUseSteam) playerIdentityTemp.Initialize(playerId, steamId);
+        if(networkManager.UseSteam) playerIdentityTemp.Initialize(playerId, steamId);
         else playerIdentityTemp.Initialize(playerId, $"Player : {playerId}");
 
-        if(playerId == networkManager.GetClient.Id) networkManager.SetLocalPlayer(playerIdentityTemp);
+        if(playerId == networkManager.Client.Id) networkManager.LocalPlayer = playerIdentityTemp;
 
-        networkManager.GetPlayers[playerId] = playerIdentityTemp;
+        networkManager.Players[playerId] = playerIdentityTemp;
     }
 
     public void RemovePlayerFromGame(ushort playerId)
     {
         NetworkManager networkManager = NetworkManager.Instance;
-        foreach (var player in networkManager.GetPlayers)
-        {
-            if (player.Key == playerId)
-            {
-                Destroy(player.Value.gameObject);
-                networkManager.GetPlayers.Remove(player.Key);
-                return;
-            }
-        }
+
+        Destroy(networkManager.Players[playerId].gameObject);
+        networkManager.Players.Remove(playerId);
     }
     
     public void ClearPlayerInGame()
     {
         NetworkManager networkManager = NetworkManager.Instance;
+
+        networkManager.LocalPlayer = null;
         
-        networkManager.SetLocalPlayer(null);
-        
-        foreach (var player in networkManager.GetPlayers)
+        foreach (var player in networkManager.Players)
         {
             Destroy(player.Value.gameObject);
         }
             
-        networkManager.GetPlayers.Clear();
+        networkManager.Players.Clear();
     }
 }
