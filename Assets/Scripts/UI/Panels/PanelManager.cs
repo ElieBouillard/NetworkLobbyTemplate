@@ -29,12 +29,17 @@ public class PanelManager : Singleton<PanelManager>
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                foreach (var panel in _panels)
-                {
-                    if (panel.PanelType == PanelType.Pause) panel.gameObject.SetActive(!_isPause);
-                    _isPause = !_isPause;
-                }
+                SetPause(!_isPause);
             }
+        }
+    }
+
+    public void SetPause(bool value)
+    {
+        foreach (var panel in _panels)
+        {
+            if (panel.PanelType == PanelType.Pause) panel.gameObject.SetActive(value);
+            _isPause = value;
         }
     }
     

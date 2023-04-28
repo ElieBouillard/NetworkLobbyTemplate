@@ -16,7 +16,7 @@ public class PausePanel : Panel
 
     private void ResumeGame()
     {
-        PanelManager.Instance.EnablePanel(PanelType.Pause);
+        PanelManager.Instance.SetPause(false);
     }
 
     private void Disconnect()
