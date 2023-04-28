@@ -525,7 +525,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df329855025e4949aaa0752d745b693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistant: 0
+  _dontDestroy: 0
+  _verbose: 0
   LobbyPanel: {fileID: 1893182851}
   _spawnPoints:
   - {fileID: 646986416}
@@ -559,7 +560,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c9c501dac5df549aaba2200465e1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistant: 0
+  _dontDestroy: 0
+  _verbose: 0
   _ipAddressInput: {fileID: 1193745577}
   _ipAddressText: {fileID: 409495132}
 --- !u!1 &396705082
@@ -605,7 +607,6 @@ GameObject:
   - component: {fileID: 409495131}
   - component: {fileID: 409495133}
   - component: {fileID: 409495132}
-  - component: {fileID: 409495134}
   m_Layer: 5
   m_Name: IpAddressText
   m_TagString: Untagged
@@ -729,20 +730,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409495130}
   m_CullTransparentMesh: 1
---- !u!114 &409495134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409495130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 461192868d8c7b14b9e8b63f7540b4ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPersistant: 0
-  _ipAddressText: {fileID: 0}
 --- !u!1 &447760445
 GameObject:
   m_ObjectHideFlags: 0
@@ -1595,7 +1582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b880eef1d92185c43b7b77262af8464e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistant: 0
+  _dontDestroy: 0
+  _verbose: 0
   _panels:
   - {fileID: 962210423}
   - {fileID: 1296947443}
@@ -2196,7 +2184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44939a1bd8c33604cabbac27922e93ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistant: 0
+  _dontDestroy: 0
+  _verbose: 0
   _content: {fileID: 1112511214}
   _invitationPrefab: {fileID: 3491883403391119318, guid: 8839c151657ad0f4fa244aa2c8cb34b6, type: 3}
 --- !u!1 &1112511213

@@ -196,11 +196,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb057a70cc52e34f9154b56dd6da42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPersistant: 1
-  _useSteam: 0
+  _dontDestroy: 1
+  _verbose: 0
+  UseSteam: 0
+  _useLocalHost: 0
   _port: 7777
-  _maxPlayer: 4
-  _gameState: 1
+  MaxPlayer: 4
+  LocalPlayer: {fileID: 0}
 --- !u!4 &2102392012
 Transform:
   m_ObjectHideFlags: 0
